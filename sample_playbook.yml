@@ -1,0 +1,9 @@
+---
+- hosts: esservers
+  roles:
+    - elasticsearch
+  vars:
+    es_cluster_name: myelasticsearch
+    es_memory_lock: true
+    es_min_memory: 4g
+    es_max_memory: 4g

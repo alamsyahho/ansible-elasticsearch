@@ -1,0 +1,40 @@
+---
+- include: java.yml
+  when:
+    - es_install_java == true
+  static: false
+
+- name: install elasticsearch
+  yum:
+    name: "{{ es_download_url }}"
+    state: present
+
+- name: copy elasticsearch configuration file
+  template:
+    src: elasticsearch.yml.j2
+    dest: "{{ es_conf_dir }}/elasticsearch.yml"
+    owner: "{{ es_user }}"
+    group: "{{ es_group }}"
+    force: true
+
+- name: update default elasticsearch memory config
+  lineinfile:
+    dest: "{{ es_conf_dir }}/jvm.options"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  with_items:
+    - regexp: "^-Xms2g$"
+      line: "-Xms{{ es_min_memory }}"
+    - regexp: "^-Xmx2g$"
+      line: "-Xmx{{ es_max_memory }}"
+
+- include: memlock.yml
+  when:
+    - es_memory_lock == true
+  static: false
+
+- name: restart and enable elasticsearch service
+  service:
+    name: elasticsearch
+    state: restarted
+    enabled: true

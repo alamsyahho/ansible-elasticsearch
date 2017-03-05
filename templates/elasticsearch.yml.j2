@@ -1,0 +1,39 @@
+#
+# ======================== Elasticsearch Configuration =========================
+#
+
+{% if es_cluster_name is not defined %}
+cluster.name: elasticsearch
+{% else %}
+cluster.name: {{ es_cluster_name }}
+{% endif %}
+
+node.name: {{ inventory_hostname }}
+
+#
+# ----------------------------------- Memory -----------------------------------
+#
+bootstrap.memory_lock: {{ es_memory_lock | lower }}
+
+#
+# ---------------------------------- Network -----------------------------------
+#
+network.host: 0.0.0.0
+
+http.port: {{ es_http_port | default(9200) }}
+
+transport.tcp.port: {{ es_transport_port | default(9300) }}
+
+{% if groups['esservers']|length >= 3 %}
+#
+# --------------------------------- Discovery ----------------------------------
+#
+
+discovery.zen.ping.unicast.hosts: [{% for host in groups['esservers']  %}
+"{{ host }}"
+{%- if loop.last %} {%- elif loop %},{% endif %}
+{% endfor %}]
+
+discovery.zen.minimum_master_nodes: {{ es_min_master_nodes | default(2) }}
+
+{% endif %}

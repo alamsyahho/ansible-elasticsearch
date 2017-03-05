@@ -1,0 +1,15 @@
+---
+- name: ensure systemd elasticsearch directory exists
+  file:
+    name: /etc/systemd/system/elasticsearch.service.d
+    state: directory
+
+- name: copy systemd elasticsearch config
+  template:
+    src: elasticsearch.conf.j2
+    dest: /etc/systemd/system/elasticsearch.service.d/elasticsearch.conf
+
+- name: run systemd daemon reload
+  systemd:
+    name: elasticsearch
+    daemon_reload: true

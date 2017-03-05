@@ -1,0 +1,14 @@
+---
+es_install_java: true
+es_version: "5.2.0"
+es_download_url: https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-{{ es_version }}.rpm
+es_user: elasticsearch
+es_group: elasticsearch
+es_conf_dir: /etc/elasticsearch
+es_cluster_name: elasticsearch
+es_memory_lock: false
+es_http_port: 9200
+es_transport_port: 9300
+es_min_master_nodes: 2
+es_min_memory: 256m
+es_max_memory: 256m
