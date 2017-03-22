@@ -8,7 +8,7 @@ cluster.name: elasticsearch
 cluster.name: {{ es_cluster_name }}
 {% endif %}
 
-node.name: {{ inventory_hostname }}
+node.name: {{ ansible_hostname }}
 
 #
 # ----------------------------------- Memory -----------------------------------
