@@ -32,18 +32,3 @@
   when:
     - es_memory_lock == true
   static: false
-
-- name: restart and enable elasticsearch service
-  service:
-    name: elasticsearch
-    state: restarted
-    enabled: true
-
-- name: "wait for elasticsearch to come up"
-  uri:
-    url: "http://{{ inventory_hostname }}:{{ es_http_port }}/_nodes"
-    status_code: 200
-  register: result
-  until: result.status == 200
-  retries: 15
-  delay: 10

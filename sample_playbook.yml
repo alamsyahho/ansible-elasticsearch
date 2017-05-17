@@ -3,7 +3,26 @@
   roles:
     - elasticsearch
   vars:
+    es_version: "5.2.2"
     es_cluster_name: myelasticsearch
     es_memory_lock: true
-    es_min_memory: 4g
-    es_max_memory: 4g
+    es_min_memory: 1g
+    es_max_memory: 1g
+
+- hosts: esservers
+  serial: 1
+  tasks:
+    - name: restart and enable elasticsearch service
+      service:
+        name: elasticsearch
+        state: restarted
+        enabled: true
+
+    - name: "wait for elasticsearch to come up"
+      uri:
+        url: "http://{{ inventory_hostname }}:9200/_nodes"
+        status_code: 200
+      register: result
+      until: result.status == 200
+      retries: 15
+      delay: 10
